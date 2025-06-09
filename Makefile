@@ -9,8 +9,8 @@ SRCS = srcs/main.c \
 			srcs/lib.c \
 			srcs/parse.c \
 			srcs/init.c \
+			srcs/safe_functions.c \
 			srcs/utils.c
-
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
@@ -22,7 +22,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-
 
 clean:
 	rm -rf $(OBJ_DIR)

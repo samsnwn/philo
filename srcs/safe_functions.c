@@ -1,5 +1,15 @@
 #include "../includes/philo.h"
 
+void *safe_malloc(size_t bytes)
+{
+  void *ptr;
+
+  ptr = malloc(bytes);
+  if (ptr == NULL)
+    error_exit("Memory allocation failed");
+  return (ptr);
+}
+
 static void handle_mutex_error(int status, t_opcode opcode)
 {
   if (status == 0)
@@ -53,7 +63,7 @@ static void handle_thread_error(int status, t_opcode opcode)
 void  safe_thread_handle(pthread_t *thread, void *(*func)(void *), void *data, t_opcode opcode)
 {
   if (opcode == CREATE)
-    handle_thread_error(pthread_create(*thread, NULL, func, data), opcode);
+    handle_thread_error(pthread_create(thread, NULL, func, data), opcode);
   else if (opcode == JOIN)
     handle_thread_error(pthread_join(*thread, NULL), opcode);
   else if (opcode == DETACH)

@@ -21,7 +21,7 @@ typedef enum e_opcode
   CREATE,
   JOIN,
   DETACH,
-  
+
 } t_opcode;
 
 typedef struct s_table t_table;
@@ -38,8 +38,8 @@ typedef struct s_philo
   long    meals_count;
   int     full;
   long    last_meal_time;
-  t_fork  *left_fork;
-  t_fork  *right_fork;
+  t_fork  *first_fork;
+  t_fork  *second_fork;
   pthread_t         thread_id;
   t_table *table;
 }       t_philo;
@@ -62,6 +62,7 @@ void  error_exit(char *error);
 void parse_input(t_table *table, char **argv);
 void data_init(t_table *table);
 
+void *safe_malloc(size_t bytes);
 void  safe_thread_handle(pthread_t *thread, void *(*func)(void *), void *data, t_opcode opcode);
 void  safe_mutex_handle(pthread_mutex_t *mutex, t_opcode opcode);
 
