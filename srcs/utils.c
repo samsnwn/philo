@@ -1,0 +1,9 @@
+#include "../includes/philo.h"
+
+void  error_exit(char *error)
+{
+  printf("%s\n", error);
+  exit(EXIT_FAILURE);
+}
+
+
