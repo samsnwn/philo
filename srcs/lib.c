@@ -28,7 +28,7 @@ long	ft_atol(const char *str)
 		str++;
 	else if (*str == '-')
     error_exit("Only positive numbers");
-  if (*str <= 48 || *str >= 57)
+  if (*str < 48 || *str > 57)
     error_exit("Not a digit");
   while (*str >= 48 && *str <= 57)
     ++len;

@@ -44,7 +44,6 @@ typedef struct s_philo
   t_table *table;
 }       t_philo;
 
-//./philo 5 800 200 200 [5]
 typedef struct s_table
 {
   long philo_nbr;
@@ -54,6 +53,8 @@ typedef struct s_table
   long nbr_limit_meals;
   long start_simulation;
   int end_simulation;
+  int   all_thread_ready;
+  pthread_mutex_t table_mutex;
   t_fork  *forks;
   t_philo *philos;
 }     t_table;
@@ -61,6 +62,7 @@ typedef struct s_table
 void  error_exit(char *error);
 void parse_input(t_table *table, char **argv);
 void data_init(t_table *table);
+void dinner_start(t_table *table);
 
 void *safe_malloc(size_t bytes);
 void  safe_thread_handle(pthread_t *thread, void *(*func)(void *), void *data, t_opcode opcode);
