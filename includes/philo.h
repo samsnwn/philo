@@ -12,7 +12,9 @@
 #define TRUE 1
 #define FALSE 0
 
-typedef enum e_opcode
+typedef struct s_table t_table;
+
+typedef enum e_action
 {
   LOCK,
   UNLOCK,
@@ -22,9 +24,24 @@ typedef enum e_opcode
   JOIN,
   DETACH,
 
-} t_opcode;
+}           t_action;
 
-typedef struct s_table t_table;
+typedef enum e_timecode
+{
+  SECONDS,
+  MILISECONDS,
+  MICROSECONDS,
+}           t_timecode;
+
+typedef enum e_status
+{
+  EATING,
+  SLEEPING,
+  THINKING,
+  TAKE_FIRST_FORK,
+  TAKE_SECOND_FORK,
+  DIED,
+}           t_status;
 
 typedef struct s_fork
 {
@@ -38,15 +55,16 @@ typedef struct s_philo
   long    meals_count;
   int     full;
   long    last_meal_time;
+  pthread_mutex_t philo_mutex;
+  pthread_t         thread_id;
   t_fork  *first_fork;
   t_fork  *second_fork;
-  pthread_t         thread_id;
   t_table *table;
-}       t_philo;
+}               t_philo;
 
 typedef struct s_table
 {
-  long philo_nbr;
+  long nbr_philo;
   long time_to_die;
   long time_to_eat;
   long time_to_sleep;
@@ -54,21 +72,46 @@ typedef struct s_table
   long start_simulation;
   int end_simulation;
   int   all_thread_ready;
+  long threads_running;
   pthread_mutex_t table_mutex;
+  pthread_mutex_t write_lock;
+  pthread_t monitor;
   t_fork  *forks;
   t_philo *philos;
 }     t_table;
 
-void  error_exit(char *error);
 void parse_input(t_table *table, char **argv);
 void data_init(t_table *table);
 void dinner_start(t_table *table);
+void *dinner_sim(void *data);
+void my_think(t_philo *philo, int pre_sim);
 
-void *safe_malloc(size_t bytes);
-void  safe_thread_handle(pthread_t *thread, void *(*func)(void *), void *data, t_opcode opcode);
-void  safe_mutex_handle(pthread_mutex_t *mutex, t_opcode opcode);
+// SAFE HANDLERS
+void  safe_thread_handle(pthread_t *thread, void *(*func)(void *), void *data, t_action action);
+void  safe_mutex_handle(pthread_mutex_t *mutex, t_action action);
 
-// LIB
+// LIB & UTILS
+void  error_exit(char *error);
+void *ft_malloc(size_t bytes);
 long	ft_atol(const char *str);
+long get_time(t_timecode timecode);
+void my_sleep(long usec, t_table *table);
+void write_status(t_status status, t_philo *philo);
+void free_destroy(t_table *table);
+
+// GETTERS & SETTERS
+void set_bool(pthread_mutex_t *mutex, int *dest, int value);
+int get_bool(pthread_mutex_t *mutex, int *value);
+void set_long(pthread_mutex_t *mutex, long *dest, long value);
+long get_long(pthread_mutex_t *mutex, long *value);
+int sim_finished(t_table *table);
+
+// SYNC UTILS
+void *monitor_dinner(void *data);
+void wait_all_threads(t_table *table);
+int all_threads_running(pthread_mutex_t *mutex, long *threads, long philo_nbr);
+void de_sync_philo(t_philo *philo);
+
+void increase_long(pthread_mutex_t *mutex, long *value);
 
 #endif

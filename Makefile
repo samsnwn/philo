@@ -9,7 +9,12 @@ SRCS = srcs/main.c \
 			srcs/lib.c \
 			srcs/parse.c \
 			srcs/init.c \
+			srcs/dinner.c \
 			srcs/safe_functions.c \
+			srcs/getters_setters.c \
+			srcs/write.c \
+			srcs/sync_utils.c \
+			srcs/monitor.c \
 			srcs/utils.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
